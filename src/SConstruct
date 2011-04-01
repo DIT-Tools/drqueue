@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2001,2002,2003,2004,2005,2006,2007 Jorge Daza Garcia-Blanes
+# Copyright (C) 2001-2011 Jorge Daza Garcia-Blanes
 # Copyright (C) 2009,2010 Andreas Schroeder
 # Copyright (C) 2010 Alistair Leslie-Hughes
 #
@@ -41,7 +41,8 @@ def get_architecture(env,escape=False,underscore=True):
         if env.get('universal_binary'):
             machine = Universal_Binaries_Short_Name
         elif platform.architecture()[0] == '64bit':
-            machine = 'x86_64'
+            #machine = 'x86_66' # Care, uname still returns 32bit
+            machine = 'i386'
     return machine
 
 def wrapper_complete_command (env,cmdlist):
@@ -282,7 +283,7 @@ for tool in cmdline_tools:
     if tool not in cpp_tools:
         ctools[tool] = env.Program (tool+'.c')
     else:
-        ctools[tool ]= env.Program (tool+'.cpp')
+        ctools[tool]= env.Program (tool+'.cpp')
     Default(ctools[tool])
 
 install_base = idir_prefix
@@ -295,7 +296,6 @@ if sys.platform == 'cygwin' or sys.platform == 'win32':
 
 bin_list = main_list + cmdline_tools
 wrapped_bin_list = wrapper_complete_command (env,bin_list)
-#wrapped_bin_copies = copy_with_clean(bin_list,wrapped_bin_list,'bin',env)
 wrapped_bin_copies = copy_with_clean(bin_list,wrapped_bin_list,idir_bin,env)
 
 # install etc files

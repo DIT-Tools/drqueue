@@ -1,5 +1,5 @@
 //
-// Copyright (C) 2001,2002,2003,2004 Jorge Daza Garcia-Blanes
+// Copyright (C) 2001-2011 Jorge Daza Garcia-Blanes
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -18,10 +18,7 @@
 //
 
 #include <stdio.h>
-
-#ifdef HAVE_UNISTD_H
 #include <unistd.h>
-#endif
 
 #include "libdrqueue.h"
 
