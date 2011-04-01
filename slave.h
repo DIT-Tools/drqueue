@@ -22,12 +22,14 @@
 #ifndef _SLAVE_H_
 #define _SLAVE_H_
 
-#ifdef HAVE_STDINT_H_
-#include <stdint.h>
-#endif
-
 #include "libdrqueue.h"
+#include "computer.h"
+#include "job.h"
 #include "constants.h"
+
+#include <limits.h>
+#include <signal.h>
+#include <stdint.h>
 
 void slave_get_options (int *argc,char ***argv, int *force, struct slave_database *sdb);
 void usage (void);

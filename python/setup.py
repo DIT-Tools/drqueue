@@ -58,7 +58,7 @@ def get_wordsize_flags():
   return bitsFlag
 
 def get_define_macros():
-  get_wordsize_flags()
+  #get_wordsize_flags()
   print("Platform is: ",sys.platform)
   l_define_macros=[('COMM_REPORT',None),('_GNU_SOURCE',None),
                    ('_NO_COMPUTER_POOL_SEMAPHORES',None),

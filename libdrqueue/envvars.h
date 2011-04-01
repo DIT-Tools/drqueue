@@ -23,9 +23,11 @@
 #define _ENVVARS_H_
 
 #include <stdint.h>
-
 #include "constants.h"
 #include "pointer.h"
+
+#include <sys/types.h>
+#include <stdint.h>
 
 #pragma pack(push,1)
 

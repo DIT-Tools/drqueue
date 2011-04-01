@@ -24,8 +24,8 @@
 #define _BLENDERSG_H_
 
 #include <stdint.h>
-
 #include "constants.h"
+#include "stdint.h"
 
 #ifdef __cplusplus
 extern "C" {

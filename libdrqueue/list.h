@@ -1,5 +1,5 @@
 //
-// Copyright (C) 2001,2002,2003,2004,2005,2006 Jorge Daza Garcia-Blanes
+// Copyright (C) 2001-2011 Jorge Daza Garcia-Blanes
 //
 // This file is part of DrQueue
 //
@@ -22,12 +22,12 @@
 #ifndef _LIST_H_
 #define _LIST_H_
 
-#include <stdint.h>
-#include <sys/types.h>
-
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+#include <stdint.h>
+#include <sys/types.h>
 
 #pragma pack(push,1)
 

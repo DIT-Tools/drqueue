@@ -19,10 +19,16 @@
 // USA
 //
 
-#ifdef HAVE_UNISTD_H
-#include <unistd.h>
+#ifdef HAVE_CONFIG_H
+#   include <lconfig.h>
 #endif
+
+#include <string.h>
+#include <unistd.h>
+#include <stdlib.h>
 #include <pwd.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 
 #include "drq_stat.h"
 #include "mantrasg.h"

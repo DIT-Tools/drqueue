@@ -1,5 +1,5 @@
 //
-// Copyright (C) 2001,2002,2003,2004,2005,2006 Jorge Daza Garcia-Blanes
+// Copyright (C) 2001-2011 Jorge Daza Garcia-Blanes
 //
 // This file is part of DrQueue
 //
@@ -22,13 +22,14 @@
 #ifndef _DATABASE_H_
 #define _DATABASE_H_
 
-#ifdef HAVE_STDINT_H
-#include <stdint.h>
-#endif
-
 #include "constants.h"
 #include "job.h"
 #include "computer.h"
+
+#include <stdint.h>
+#include <sys/types.h>
+#include <stdlib.h>
+#include <stdio.h>
 
 #pragma pack(push,1)
 

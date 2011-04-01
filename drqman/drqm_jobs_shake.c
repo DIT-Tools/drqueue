@@ -19,6 +19,12 @@
 // USA
 //
 
+#include <string.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include <pwd.h>
+#include <sys/types.h>
+
 #include "drqm_jobs.h"
 #include "drqm_common.h"
 #include "drqm_jobs_shake.h"

@@ -29,7 +29,6 @@
 #include <limits.h>
 
 #include "computer.h"
-#include "constants.h"
 
 #define KEY_SLAVE "slave" /* Key file for shared memory and semaphores */
 

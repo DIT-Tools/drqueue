@@ -23,15 +23,14 @@
 #ifndef _JOBSCRIPT_H_
 #define _JOBSCRIPT_H_
 
-#ifdef HAVE_STDINT_H
-#include <stdint.h>
-#endif
-
-#include "constants.h"
-
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+#include <stdio.h>
+#include <stdint.h>
+#include <sys/types.h>
+#include <limits.h>
 
 #pragma pack(push,1)
 
