@@ -25,11 +25,7 @@
 #include "libdrqueue.h"
 #include <gtk/gtk.h>
 
-#ifdef __CYGWIN
-extern FILE *file_null;
-//#define stderr file_null
-#endif
-
+#define DIR_SEPARATOR_CHAR '/'
 #define TOOLTIPS_DELAY 1000
 
 #define DRQ_COMPILED_FOR ""

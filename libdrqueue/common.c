@@ -19,8 +19,8 @@
 // USA
 //
 #include <stdio.h>
+#include <sys/stat.h>
 
-#include "drq_stat.h"
 #include "common.h"
 #include "drerrno.h"
 #include "constants.h"
@@ -54,17 +54,10 @@ common_environment_check (void) {
     log_auto (L_ERROR,"Could not find temp path '%s'. (%s)",dir_str,strerror(drerrno_system));
     return 0;
   } else {
-#if defined (__CYGWIN) || defined(_WIN32)
-    if (!S_ISDIR(s_stat.st_mode)) {
-      drerrno = DRE_NOTMPDIR;
-      return 0;
-    }
-#else
     if ((!S_ISDIR(s_stat.st_mode)) || (!(S_IWOTH & s_stat.st_mode))) {
       drerrno = DRE_NOTMPDIR;
       return 0;
     }
-#endif
   }
 
   if (getenv("DRQUEUE_DB") != NULL) {
@@ -78,21 +71,12 @@ common_environment_check (void) {
     drerrno = DRE_NODBDIR;
     return 0;
   } else {
-#if defined (__CYGWIN) || defined(_WIN32)
-    if (!S_ISDIR(s_stat.st_mode)) {
-      drerrno_system = errno;  
-      log_auto (L_ERROR,"no database directory found on '%s'. It's not a directory. (%s)",dir_str,strerror(drerrno_system));
-      drerrno = DRE_NODBDIR;
-      return 0;
-    }
-#else
     if ((!S_ISDIR(s_stat.st_mode)) || (!(S_IWUSR & s_stat.st_mode))) {
       drerrno_system = errno;  
       log_auto (L_ERROR,"no database directory found on '%s'. It's not a directory or not user writable. (%s)",dir_str,strerror(drerrno_system));
       drerrno = DRE_NODBDIR;
       return 0;
     }
-#endif
   }
 
   if (getenv("DRQUEUE_LOGS")) {
@@ -104,17 +88,10 @@ common_environment_check (void) {
     drerrno = DRE_NOLOGDIR;
     return 0;
   } else {
-#if defined (__CYGWIN) || defined(_WIN32)
-    if (!S_ISDIR(s_stat.st_mode)) {
-      drerrno = DRE_NOLOGDIR;
-      return 0;
-    }
-#else
     if ((!S_ISDIR(s_stat.st_mode)) || (!(S_IWUSR & s_stat.st_mode))) {
       drerrno = DRE_NOLOGDIR;
       return 0;
     }
-#endif
   }
 
   if (getenv("DRQUEUE_BIN")) {
@@ -289,54 +266,39 @@ set_default_env(void) {
     drq_root[strlen(drq_root)-1] = 0;
 
   if (!getenv("DRQUEUE_TMP")) {
-    snprintf(renv,BUFFERLEN,"DRQUEUE_TMP=%s%ctmp",drq_root,
-                    DIR_SEPARATOR_CHAR);
+    snprintf(renv,BUFFERLEN,"DRQUEUE_TMP=%s/tmp",drq_root);
     penv = (char*) malloc (strlen(renv)+1);
     strncpy(penv,renv,strlen(renv)+1);
     putenv(penv);
   }
 
   if (!getenv("DRQUEUE_ETC")) {
-    snprintf(renv,BUFFERLEN,"DRQUEUE_ETC=%s%cetc",drq_root,
-                    DIR_SEPARATOR_CHAR);
+    snprintf(renv,BUFFERLEN,"DRQUEUE_ETC=%s/etc",drq_root);
     penv = (char*) malloc (strlen(renv)+1);
     strncpy(penv,renv,strlen(renv)+1);
     putenv(penv);
   }
 
   if (!getenv("DRQUEUE_BIN")) {
-    snprintf(renv,BUFFERLEN,"DRQUEUE_BIN=%s%cbin",drq_root,
-                    DIR_SEPARATOR_CHAR);
+    snprintf(renv,BUFFERLEN,"DRQUEUE_BIN=%s/bin",drq_root);
     penv = (char*) malloc (strlen(renv)+1);
     strncpy(penv,renv,strlen(renv)+1);
     putenv(penv);
   }
 
   if (!getenv("DRQUEUE_LOGS")) {
-    snprintf(renv,BUFFERLEN,"DRQUEUE_LOGS=%s%clogs",drq_root,
-                    DIR_SEPARATOR_CHAR);
+    snprintf(renv,BUFFERLEN,"DRQUEUE_LOGS=%s/logs",drq_root);
     penv = (char*) malloc (strlen(renv)+1);
     strncpy(penv,renv,strlen(renv)+1);
     putenv(penv);
   }
 
   if (!getenv("DRQUEUE_DB")) {
-    snprintf(renv,BUFFERLEN,"DRQUEUE_DB=%s%cdb",drq_root,
-                    DIR_SEPARATOR_CHAR);
+    snprintf(renv,BUFFERLEN,"DRQUEUE_DB=%s/db",drq_root);
     penv = (char*) malloc (strlen(renv)+1);
     strncpy(penv,renv,strlen(renv)+1);
     putenv(penv);
   }
-
-#ifdef __CYGWIN
-  if (!getenv("CYGWIN")) {
-    snprintf(renv,BUFFERLEN,"CYGWIN=server");
-    penv = (char*) malloc (strlen(renv)+1);
-    strncpy(penv,renv,strlen(renv)+1);
-    putenv(penv);
-  }
-#endif
-  
 }
 
 char *

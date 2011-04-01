@@ -213,33 +213,25 @@ connect_to_master (void) {
     break;
   }
 
-  /* open connection, try MAX_CONNECT_ATTEMPTS times */
-  for (i=1; i<=MAX_CONNECT_ATTEMPTS; i++) {
-    sfd = socket (PF_INET,SOCK_STREAM,0);
-    if (sfd == -1) {
-      freeaddrinfo(res0);
-      drerrno_system = errno;
-      drerrno = DRE_NOSOCKET;
-      return -1;
-    }
-
-    if (connect(sfd, res->ai_addr, res->ai_addrlen) == -1) {
-      if (i < MAX_CONNECT_ATTEMPTS) {
-        log_auto(L_ERROR, "connect(): communications problem. Could not connect to master (%s). Retry in 2 seconds.", strerror(errno));
-        sleep(2);
-      } else {
-        freeaddrinfo(res0);
-        log_auto(L_ERROR, "connect(): communications problem. Could not connect to master (%s). Giving up after %i attempts.", strerror(errno), conn_tries);
-        drerrno_system = errno;
-        drerrno = DRE_NOCONNECT;
-        return -1;
-      }
-    } else {
-      freeaddrinfo(res0);
-      return sfd;
-    }
+  sfd = socket (PF_INET,SOCK_STREAM,0);
+  if (sfd == -1) {
+    freeaddrinfo(res0);
+    drerrno_system = errno;
+    drerrno = DRE_NOSOCKET;
+    return -1;
   }
 
+  if (connect(sfd, res->ai_addr, res->ai_addrlen) == -1) {
+    freeaddrinfo(res0);
+    close(sfd);
+    drerrno_system = errno;
+    drerrno = DRE_NOCONNECT;
+    log_auto(L_ERROR, "connect_to_master(): Could not connect to master (%s).", strerror(errno));
+    return -1;
+  } else {
+    freeaddrinfo(res0);
+    return sfd;
+  }
 }
 
 int 

@@ -19,12 +19,17 @@
 // USA
 //
 
-#ifdef HAVE_UNISTD_H
-#include <unistd.h>
+#ifdef HAVE_CONFIG_H
+#   include <lconfig.h>
 #endif
-#include <pwd.h>
 
-#include "drq_stat.h"
+#include <string.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include <pwd.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+
 #include "mantrasg.h"
 #include "drqm_jobs.h"
 #include "drqm_common.h"

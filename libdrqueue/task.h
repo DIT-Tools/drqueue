@@ -22,11 +22,10 @@
 #ifndef _TASK_H_
 #define _TASK_H_
 
-#ifdef HAVE_STDINT_H
-#include <stdint.h>
-#endif
-
 #include "constants.h"
+
+#include <sys/types.h>
+#include <stdint.h>
 
 #define DR_EXITEDFLAG (0x0100)
 #define DR_SIGNALEDFLAG (0x0200)

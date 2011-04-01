@@ -1,5 +1,5 @@
 //
-// Copyright (C) 2001,2002,2003,2004,2005,2006,2007 Jorge Daza Garcia-Blanes
+// Copyright (C) 2001-2011 Jorge Daza Garcia-Blanes
 // Copyright (C) 2010 Andreas Schroeder
 //
 // This file is part of DrQueue
@@ -20,11 +20,12 @@
 // USA
 //
 
-#ifdef HAVE_STDINT_H
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
+#include <sys/types.h>
 #include <stdint.h>
-#endif
-
-#include "constants.h"
+#include <stdarg.h>
 
 #include "drqman.h"
 #include "drqm_request.h"

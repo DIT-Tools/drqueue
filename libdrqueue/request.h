@@ -22,19 +22,15 @@
 #ifndef _REQUEST_H_
 #define _REQUEST_H_
 
-#include <stdio.h>
-#include <stdlib.h>
-
-#ifdef HAVE_STDINT_H
-#include <stdint.h>
-#endif
-#include <sys/types.h>
-
 #include "job.h"
 #include "database.h"
 #include "request_errors.h"
 #include "request_codes.h"
-#include "constants.h"
+
+#include <stdint.h>
+#include <sys/types.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 #ifdef __cplusplus
 extern "C" {

@@ -22,6 +22,7 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include <fcntl.h>
+#include <sys/stat.h>
 
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
@@ -31,7 +32,6 @@
 #include <process.h>
 #endif
 
-#include "drq_stat.h"
 #include "libdrqueue.h"
 
 int loglevel = L_INFO;
@@ -381,11 +381,7 @@ int
 log_path_create (char *path) {
   int rv;
 
-#ifdef _WIN32
-  if ((rv = mkdir (path)) == -1) {
-#else
   if ((rv = mkdir (path,0777)) == -1) {
-#endif
     drerrno_system = errno;
     return 0;
   }

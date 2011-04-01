@@ -22,11 +22,8 @@
 #ifndef _SEMAPHORES_H_
 #define _SEMAPHORES_H_
 
-#ifdef HAVE_STDINT_H
+#include <sys/types.h>
 #include <stdint.h>
-#endif
-
-#include "constants.h"
 
 
 int semaphore_lock (int64_t semid);

@@ -1,5 +1,5 @@
 //
-// Copyright (C) 2001,2002,2003,2004 Jorge Daza Garcia-Blanes
+// Copyright (C) 2001-2011 Jorge Daza Garcia-Blanes
 // Copyright (C) 2010 Andreas Schroeder
 //
 // This file is part of DrQueue
@@ -23,10 +23,7 @@
 #ifndef _AQSISSG_H_
 #define _AQSISSG_H_
 
-#ifdef HAVE_STDINT_H
 #include <stdint.h>
-#endif
-
 #ifdef __IRIX
 #include <sys/types.h>
 #endif

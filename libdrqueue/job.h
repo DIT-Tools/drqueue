@@ -27,11 +27,7 @@ extern "C" {
 #endif
 
 #include <stdio.h>
-
-#ifdef HAVE_STDINT_H
 #include <stdint.h>
-#endif
-
 #include <sys/types.h>
 #include <time.h>
 #include <limits.h>

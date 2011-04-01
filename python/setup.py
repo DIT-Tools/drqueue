@@ -19,7 +19,11 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA	 02111-1307
 # USA
 # 
+# $Id$
+#
 
+from ez_setup import use_setuptools
+use_setuptools()
 from setuptools import setup
 
 import os
@@ -54,7 +58,7 @@ def get_wordsize_flags():
   return bitsFlag
 
 def get_define_macros():
-  get_wordsize_flags()
+  #get_wordsize_flags()
   print("Platform is: ",sys.platform)
   l_define_macros=[('COMM_REPORT',None),('_GNU_SOURCE',None),
                    ('_NO_COMPUTER_POOL_SEMAPHORES',None),
@@ -128,6 +132,7 @@ setup(
                  #+ get_abspath_glob(os.path.join('..','libdrqueue','*.c')) \
                  + get_abspath_glob(os.path.join('libdrqueue','*.c')),
                  libraries = [ 'python'+distutils.sysconfig.get_python_version() ],
+                 extra_compile_args = [ '' ], 
                  library_dirs= [ distutils.sysconfig.get_python_lib() ] + custom_library_paths(),
                  define_macros=get_define_macros(),
                  include_dirs=[get_abspath('..'),
@@ -135,6 +140,7 @@ setup(
                                get_abspath('libdrqueue')] +
                                custom_include_paths(),
                  swig_opts=get_swig_flags()),],
+    py_modules=['drqueue.base.libdrqueue'],
     #packages = find_packages(exclude='ez_setup.py'),
     packages = [ 'drqueue', 'drqueue.base' ],
     package_dir = { '' : 'src' },

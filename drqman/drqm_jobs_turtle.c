@@ -1,5 +1,5 @@
 //
-// Copyright (C) 2001,2002,2003,2004,2005,2006,2007 Jorge Daza Garcia-Blanes
+// Copyright (C) 2001-2011 Jorge Daza Garcia-Blanes
 //
 // This file is part of DrQueue
 //
@@ -19,12 +19,13 @@
 // USA
 //
 
-#ifdef HAVE_UNISTD_H
+#include <string.h>
 #include <unistd.h>
-#endif
+#include <stdlib.h>
 #include <pwd.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 
-#include "drq_stat.h"
 #include "drqm_jobs.h"
 #include "drqm_common.h"
 #include "drqm_jobs_turtle.h"
