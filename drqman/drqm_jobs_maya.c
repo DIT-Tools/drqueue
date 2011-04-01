@@ -26,14 +26,9 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 
-#include "drq_stat.h"
 #include "drqm_jobs.h"
 #include "drqm_common.h"
 #include "drqm_jobs_maya.h"
-
-#ifdef __CYGWIN
-#include "drqm_cygwin.h"
-#endif
 
 static void dnj_koj_frame_maya_projectdir_search (GtkWidget *button, struct drqmj_koji_maya *info);
 static void dnj_koj_frame_maya_projectdir_set (GtkWidget *button, struct drqmj_koji_maya *info);

@@ -19,8 +19,8 @@
 // USA
 //
 #include <stdio.h>
+#include <sys/stat.h>
 
-#include "drq_stat.h"
 #include "common.h"
 #include "drerrno.h"
 #include "constants.h"
