@@ -23,9 +23,7 @@
 #ifndef _BLENDERSG_H_
 #define _BLENDERSG_H_
 
-#ifdef HAVE_STDINT_H
 #include <stdint.h>
-#endif
 
 #include "constants.h"
 

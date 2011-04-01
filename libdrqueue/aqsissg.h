@@ -23,9 +23,7 @@
 #ifndef _AQSISSG_H_
 #define _AQSISSG_H_
 
-#ifdef HAVE_STDINT_H
 #include <stdint.h>
-#endif
 
 #ifdef __IRIX
 #include <sys/types.h>

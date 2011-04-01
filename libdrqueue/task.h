@@ -22,10 +22,7 @@
 #ifndef _TASK_H_
 #define _TASK_H_
 
-#ifdef HAVE_STDINT_H
 #include <stdint.h>
-#endif
-
 #include "constants.h"
 
 #define DR_EXITEDFLAG (0x0100)

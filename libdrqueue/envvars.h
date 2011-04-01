@@ -22,9 +22,7 @@
 #ifndef _ENVVARS_H_
 #define _ENVVARS_H_
 
-#ifdef HAVE_STDINT_H
 #include <stdint.h>
-#endif
 
 #include "constants.h"
 #include "pointer.h"
