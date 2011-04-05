@@ -1,5 +1,5 @@
 //
-// Copyright (C) 2001,2002,2003,2004,2005,2006 Jorge Daza Garcia-Blanes
+// Copyright (C) 2001-2011 Jorge Daza Garcia-Blanes
 // Copyright (C) 2010 Andreas Schroeder
 //
 // This file is part of DrQueue
@@ -1793,12 +1793,7 @@ handle_r_r_jobxfer (int sfd, struct database *wdb, int icomp, struct request *re
   uint32_t ijob;
   struct job job;
 
-  // fix compiler warning
-  (void)icomp;
-  
-  // FIXME: use icomp variable
-  
-  
+  // FIXME: use icomp variable <<<< jejeje
 
   log_auto (L_DEBUG,"Entering handle_r_r_jobxfer");
 
@@ -1807,7 +1802,11 @@ handle_r_r_jobxfer (int sfd, struct database *wdb, int icomp, struct request *re
   semaphore_lock(wdb->semid);
   if (!job_index_correct_master(wdb,ijob)) {
     semaphore_release(wdb->semid);
-    log_auto (L_INFO,"Job asked to be transfered does not exist");
+    if (icomp != -1) {
+      log_auto (L_INFO,"Computer: %s has requested information about non-existing jobid: %i",wdb->computer[icomp].hwinfo.name,ijob);
+    } else {
+      log_auto (L_INFO,"One un-registered client has requested information about non-existing jobid: %i",ijob);
+    }
     req->type = R_R_JOBXFER;
     req->data = RERR_NOREGIS;
     send_request(sfd,req,MASTER);
