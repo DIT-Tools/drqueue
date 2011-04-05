@@ -133,7 +133,7 @@ handle_request_master (int sfd, struct database *wdb, int icomp, struct sockaddr
     handle_r_r_compxfer (sfd,wdb,icomp,&request);
     break;
   case R_R_JOBFWAIT:
-    log_auto (L_DEBUG,"Request job frame set to waiting"); // Requeue (do we need another function ?)
+    log_auto (L_DEBUG,"Request job frame set to waiting"); // Requeue (do we need another function ?). Is this being used ?
     handle_r_r_jobfwait (sfd,wdb,icomp,&request);
     break;
   case R_R_JOBFKILL:
@@ -1801,10 +1801,11 @@ handle_r_r_jobxfer (int sfd, struct database *wdb, int icomp, struct request *re
 
   semaphore_lock(wdb->semid);
   if (!job_index_correct_master(wdb,ijob)) {
-    semaphore_release(wdb->semid);
-    if (icomp != -1) {
+    if (computer_index_correct_master(wdb,icomp)) {
+      semaphore_release(wdb->semid);
       log_auto (L_INFO,"Computer: %s has requested information about non-existing jobid: %i",wdb->computer[icomp].hwinfo.name,ijob);
     } else {
+      semaphore_release(wdb->semid);
       log_auto (L_INFO,"One un-registered client has requested information about non-existing jobid: %i",ijob);
     }
     req->type = R_R_JOBXFER;
