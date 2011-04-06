@@ -31,6 +31,15 @@ the packages:
 Always refer to your own documentation for instructions on how to
 properly install every package.
 
+Remember to use the 'src', Luke
+===============================
+
+First:
+$ cd src
+
+Now that you're using the 'src' ...
+
+
 Building the software
 =====================
 
