@@ -1,14 +1,14 @@
 //
-// Copyright (C) 2001,2002,2003,2004,2005,2006,2007 Jorge Daza Garcia-Blanes
+// Copyright (C) 2001-2011 Jorge Daza Garcia-Blanes
 //
 // This file is part of DrQueue
 //
-// This program is free software; you can redistribute it and/or modify
+// DrQueue is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
 //
-// This program is distributed in the hope that it will be useful,
+// DrQueue is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
@@ -34,7 +34,6 @@
 #include "drerrno.h"
 #include "logger.h"
 #include "semaphores.h"
-
 
 void
 database_init (struct database *wdb) {
@@ -67,16 +66,14 @@ database_job_save (int sfd, struct job *job) {
   
   datasize = sizeof (struct job);
   datasize = htonl (datasize);
-  //if (!dr_file_write(sfd,(char*)&datasize,sizeof(datasize))) {
-  if (!dr_write(sfd, (char*)&datasize, sizeof(datasize))) {
+  if (!dr_write(sfd,(char*)&datasize,sizeof(datasize))) {
     log_auto (L_ERROR,"database_job_save(): error saving job data size (%u). (%s)",ntohl(datasize),strerror(drerrno_system));
     return 0;
   }
   datasize = ntohl (datasize);
 
   job_bswap_to_network (job,&bswapped);
-  //if (!dr_file_write(sfd,buf,datasize)) {
-  if (!dr_write(sfd, buf, datasize)) {
+  if (!dr_write(sfd,buf,datasize)) {
     log_auto (L_ERROR,"database_job_save(): error saving job main information. (%s)",strerror(drerrno_system));
     return 0;
   }
@@ -104,7 +101,6 @@ int
 database_job_load (int sfd, struct job *job) {
   uint32_t datasize;
   
-  //if (!dr_file_read(sfd,(char*)&datasize,sizeof(datasize))) {
   if (!dr_read(sfd,(char*)&datasize,sizeof(datasize))) {
     log_auto (L_ERROR,"database_job_load(): error reading job data size (%u). (%s)",ntohl(datasize),strerror(drerrno_system));
     return 0;
@@ -117,8 +113,7 @@ database_job_load (int sfd, struct job *job) {
   }
   
   job_delete(job);
-  //if (!dr_file_read(sfd,(char*)job,datasize)) {
-  if (!dr_read(sfd, (char*)job, datasize)) {
+  if (!dr_read(sfd,(char*)job,datasize)) {
     log_auto (L_ERROR,"database_job_load(): error reading job main information. (%s)",strerror(drerrno_system));
     return 0;
   }
@@ -444,115 +439,3 @@ int
 database_job_load_envvars (int sfd, struct job *job) {
   return recv_envvars (sfd,&job->envvars,0);
 }
-
-static int
-dr_file_read (int fd, char *buf, uint32_t len) {
-  int r;
-  int bleft;
-  int total = 0;
-
-  bleft = len;
-  while ((r = read (fd,buf,bleft)) < bleft) {
-    if ((r == -1) || ((r == 0) && (bleft > 0))) {
-      /* if r is error or if there are no more bytes left on the socket but there _SHOULD_ be */
-      drerrno_system = errno;
-      drerrno = DRE_ERRORREADING;
-      return 0;
-    }
-    bleft -= r;
-    buf += r;
-    total += r;
-#ifdef COMM_REPORT
-    brecv += r;
-#endif
-  }
-
-#ifdef COMM_REPORT
-  brecv += r;
-#endif
-
-  return len;
-}
-
-static int
-dr_file_write (int fd, char *buf, uint32_t len) {
-  int w;
-  int bleft;
-
-  bleft = len;
-  while ((w = write(fd,buf,bleft)) < bleft) {
-    bleft -= w;
-    buf += w;
-    if ((w == -1) || ((w == 0) && (bleft > 0))) {
-      /* if w is error or if no more bytes are written but they _SHOULD_ be */
-      drerrno_system = errno;
-      drerrno = DRE_ERRORWRITING;
-      return 0;
-    }
-#ifdef COMM_REPORT
-    bsent += w;
-#endif
-
-  }
-#ifdef COMM_REPORT
-  bsent += w;
-#endif
-
-  return len;
-}
-
-static int
-write_32b (int sfd, void *data) {
-  uint32_t bswapped;
-  void *buf = &bswapped;
-
-  bswapped = htonl (*(uint32_t *)data);
-  if (!dr_file_write (sfd,(char*)buf,sizeof (uint32_t))) {
-    return 0;
-  }
-
-  return 1;
-}
-
-static int
-write_16b (int sfd, void *data) {
-  uint16_t bswapped;
-  void *buf = &bswapped;
-
-  bswapped = htons (*(uint16_t *)data);
-  if (!dr_file_write (sfd,(char*)buf,sizeof (uint16_t))) {
-    return 0;
-  }
-
-  return 1;
-}
-
-static int
-read_32b (int sfd, void *data) {
-  void *buf;
-
-  buf = data;
-  if (!dr_file_read (sfd,(char*)buf,sizeof(uint32_t))) {
-    return 0;
-  }
-
-  *(uint32_t *)data = ntohl (*((uint32_t *)data));
-
-  return 1;
-}
-
-static int
-read_16b (int sfd, void *data) {
-  void *buf;
-
-  buf = data;
-  if (!dr_file_read (sfd,(char*)buf,sizeof(uint16_t))) {
-    return 0;
-  }
-
-  *(uint16_t *)data = ntohs (*((uint16_t *)data));
-
-  return 1;
-}
-
-
