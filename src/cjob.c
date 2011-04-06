@@ -42,13 +42,6 @@ int main (int argc,char *argv[]) {
   int ijob = -1;
   int action = ACTION_NONE;
   struct job job;
-  int nRet = 0;
-
-  if(network_initialize() != 0) {
-    fprintf (stderr,"Could not initialize the network: %s\n", drerrno_str());
-    nRet = 1;
-    goto cleanup;
-  }
 
   while ((opt = getopt (argc,argv,"sdcktj:vh")) != -1) {
     switch (opt) {
@@ -72,27 +65,24 @@ int main (int argc,char *argv[]) {
       break;
     case 'v':
       show_version (argv);
-      goto cleanup;
+      exit (0);
     case '?':
     case 'h':
       usage();
-      nRet = 1;
-      goto cleanup;
+      exit (1);
     }
   }
 
   if ((ijob == -1) || (action == ACTION_NONE)) {
     usage ();
-    nRet = 1;
-      goto cleanup;
+    exit (1);
   }
 
   set_default_env();
 
   if (!common_environment_check()) {
     fprintf (stderr,"Error checking the environment: %s\n",drerrno_str());
-    nRet = 1;
-    goto cleanup;
+    exit (1);
   }
 
   switch (action) {
@@ -118,10 +108,7 @@ int main (int argc,char *argv[]) {
     break;
   }
 
-cleanup:
-  network_shutdown();
-
-  return nRet;
+  exit (0);
 }
 
 void usage (void) {

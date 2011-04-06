@@ -38,13 +38,6 @@ int main (int argc,char *argv[]) {
   uint32_t frame = -1;
   uint32_t ijob = -1;
   int status = STATUS_NONE;
-  int nRet = 0;
-  
-  if(network_initialize() != 0) {
-    fprintf (stderr,"Could not initialize the network: %s\n", drerrno_str());
-    nRet = 1;
-    goto cleanup;
-  }
 
   while ((opt = getopt (argc,argv,"j:f:dervh")) != -1) {
     switch (opt) {
@@ -65,27 +58,24 @@ int main (int argc,char *argv[]) {
       break;
     case 'v':
       show_version (argv);
-      goto cleanup;
+      exit (0);
     case '?':
     case 'h':
       usage();
-      nRet = 1;
-      goto cleanup;
+      exit (1);
     }
   }
 
   if ((ijob == -1) || (status == STATUS_NONE)) {
     usage ();
-    nRet = 1;
-    goto cleanup;
+    exit (1);
   }
 
   set_default_env();
 
   if (!common_environment_check()) {
     fprintf (stderr,"Error checking the environment: %s\n",drerrno_str());
-    nRet = 1;
-    goto cleanup;
+    exit (1);
   }
 
   switch (status) {
@@ -93,8 +83,7 @@ int main (int argc,char *argv[]) {
     printf ("Setting frame finished: %i,%i\n",frame,ijob);
     if (! request_job_frame_finish (ijob,frame,CLIENT)) {
       fprintf (stderr,"ERROR: While trying to set finished: %s\n",drerrno_str());
-      nRet = 1;
-      goto cleanup;
+      exit (1);
     }
     printf ("Frame set finished successfully\n");
     break;
@@ -105,17 +94,13 @@ int main (int argc,char *argv[]) {
     printf ("Requeueing frame: %i,%i\n",frame,ijob);
     if (! request_job_frame_waiting (ijob,frame,CLIENT)) {
       fprintf (stderr,"ERROR: While trying to requeue: %s\n",drerrno_str());
-      nRet = 1;
-      goto cleanup;
+      exit (1);
     }
     printf ("Frame requeued successfully\n");
     break;
   }
 
-cleanup:
-  network_shutdown();
-
-  return nRet;
+  exit (0);
 }
 
 void usage (void) {

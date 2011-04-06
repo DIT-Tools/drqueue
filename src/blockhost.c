@@ -43,14 +43,7 @@ int main (int argc,char *argv[]) {
   struct blocked_host *bh;
   uint16_t nblocked;
   int i;
-  int nRet = 0;
-  
-  if(network_initialize() != 0) {
-    fprintf (stderr,"Could not initialize the network: %s\n", drerrno_str());
-    nRet = 1;
-    goto cleanup;
-  }
-  
+
   while ((opt = getopt (argc,argv,"lj:a:d:vh")) != -1) {
     switch (opt) {
     case 'a':
@@ -69,43 +62,38 @@ int main (int argc,char *argv[]) {
       break;
     case 'v':
       show_version (argv);
-      goto cleanup;
+      exit (0);
     case '?':
     case 'h':
       usage();
-      nRet = 1;
-      goto cleanup;
+      exit (1);
     }
   }
 
   if ((ijob == -1) || (action == ACTION_NONE)) {
     usage ();
-    nRet = 1;
-    goto cleanup;
+    exit (1);
   }
 
   set_default_env();
 
   if (!common_environment_check()) {
     fprintf (stderr,"Error checking the environment: %s\n",drerrno_str());
-    nRet = 1;
-    goto cleanup;
+    exit (1);
   }
 
   switch (action) {
   case ACTION_ADD:
     if (!request_job_add_blocked_host ((uint32_t)ijob,(uint32_t)icomp,CLIENT)) {
       fprintf (stderr,"ERROR: While trying to add host to block list: %s\n",drerrno_str());
-      nRet = 1;
-      goto cleanup;
+      exit (1);
     }
     printf ("Host blocked successfully\n");
     break;
   case ACTION_DEL:
     if (!request_job_delete_blocked_host ((uint32_t)ijob,(uint32_t)icomp,CLIENT)) {
       fprintf (stderr,"ERROR: While trying to delete host from block list: %s\n",drerrno_str());
-      nRet = 1;
-      goto cleanup;
+      exit (1);
     }
     printf ("Host unblocked successfully\n");
     break;
@@ -117,10 +105,7 @@ int main (int argc,char *argv[]) {
     break;
   }
 
-cleanup:
-  network_shutdown();
-
-  return nRet;
+  exit (0);
 }
 
 void usage (void) {
