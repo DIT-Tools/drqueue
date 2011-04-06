@@ -49,20 +49,25 @@ computer_index_addr (void *pwdb, struct in_addr addr) {
 
   log_auto (L_DEBUG,"Entering computer_index_addr");
 
-  semaphore_lock(((struct database *)pwdb)->semid);
   /* search for address */
   for (i=0;i<MAXCOMPUTERS; i++) {
-    log_auto (L_DEBUG, "Comparing %s with %s.", inet_ntoa(addr), wdb->computer[i].hwinfo.address);
-    log_auto (L_DEBUG, "Used: %i.", (wdb->computer[i].used));
-    if ((strcmp(inet_ntoa(addr),wdb->computer[i].hwinfo.address) == 0) && (wdb->computer[i].used == 1)) {
-      log_auto (L_DEBUG, "Found! Index is %i.", i);
+    if (wdb->computer[i].used && (strcmp(inet_ntoa(addr),wdb->computer[i].hwinfo.address) == 0)) {
+      log_auto(L_DEBUG,"Address (%s) belongs to registered computer with index: %i",inet_ntoa(addr),i);
       index = i;
       break;
     }
   }
-  semaphore_release(((struct database *)pwdb)->semid);
 
-  log_auto (L_DEBUG, "Exiting computer_index_addr. Index of computer %s is %i.", inet_ntoa(addr), index);
+  if (index == -1) {
+    log_auto(L_DEBUG,"Address (%s) not found as a slave address",inet_ntoa(addr));
+    // But the address could be the name...
+    index = computer_index_name(pwdb,inet_ntoa(addr));
+    if (index != -1) {
+      log_auto(L_DEBUG,"Address (%s) has been found as a slave name, though, we're lucky people",inet_ntoa(addr));
+    }
+  }
+    
+  log_auto (L_DEBUG, "Exiting computer_index_addr.");
 
   return index;
 }
@@ -73,21 +78,10 @@ computer_index_name (void *pwdb, char *name) {
   int index = -1;
   int i;
 
-  log_auto (L_DEBUG,"Entering computer_index_name");
-
-  semaphore_lock(((struct database *)pwdb)->semid);
-  for (i=0;i<MAXCOMPUTERS; i++) {
-    log_auto (L_DEBUG, "Comparing %s with %s.", name, wdb->computer[i].hwinfo.name);
-    log_auto (L_DEBUG, "Used: %i.", (wdb->computer[i].used));
-    if ((strcmp(name,wdb->computer[i].hwinfo.name) == 0) && (wdb->computer[i].used)) {
-      log_auto (L_DEBUG, "Found! Index is %i.", i);
+  for (i=0;((i<MAXCOMPUTERS)&&(index==-1)); i++) {
+    if ((strcmp(name,wdb->computer[i].hwinfo.name) == 0) && (wdb->computer[i].used))
       index = i;
-      break;
-    }
   }
-  semaphore_release(((struct database *)pwdb)->semid);
-
-  log_auto (L_DEBUG, "Exiting computer_index_name. Index of computer %s is %i.", name, index);
 
   return index;
 }
@@ -311,18 +305,8 @@ computer_limits_cleanup_to_send (struct computer_limits *cl) {
 void
 computer_limits_init (struct computer_limits *cl) {
   memset (cl,0,sizeof(struct computer_limits));
-  
-  char *buf = NULL;
-  if ( (buf = getenv ("DRQUEUE_ENABLED")) == NULL) {
-    cl->enabled = 1;
-  } else {
-    cl->enabled = atoi(buf);
-  }
-  if ( (buf = getenv ("DRQUEUE_MAX_CPUS")) == NULL) {
-    cl->nmaxcpus = MAXTASKS;
-  } else {
-    cl->nmaxcpus = atoi(buf);
-  }
+  cl->enabled = 1;
+  cl->nmaxcpus = MAXTASKS;
   cl->maxfreeloadcpu = MAXLOADAVG;
   cl->autoenable.h = AE_HOUR; /* At AE_HOUR:AE_MIN autoenable by default */
   cl->autoenable.m = AE_MIN;

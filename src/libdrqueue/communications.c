@@ -1,14 +1,14 @@
 //
-// Copyright (C) 2001-2010 Jorge Daza Garcia-Blanes
+// Copyright (C) 2001-2011 Jorge Daza Garcia-Blanes
 //
 // This file is part of DrQueue
 //
-// This program is free software; you can redistribute it and/or modify
+// DrQueue is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2 of the License, or
 // (at your option) any later version.
 //
-// This program is distributed in the hope that it will be useful,
+// DrQueue is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
@@ -83,11 +83,7 @@ get_socket (uint16_t port) {
     return sfd;
     //kill (0,SIGINT);
   } else {
-#ifdef _WIN32      
-    if (setsockopt(sfd,SOL_SOCKET,SO_REUSEADDR,(char *)&opt,sizeof(opt)) == -1) {
-#else
     if (setsockopt(sfd,SOL_SOCKET,SO_REUSEADDR,(void *)&opt,sizeof(opt)) == -1) {
-#endif
       drerrno_system = errno;
       log_auto (L_ERROR,"get_socket(): call to setsockopt() failed. Msg: %s",strerror(drerrno_system));
     }
@@ -111,10 +107,8 @@ accept_socket_master (int sfd, struct database *wdb, struct sockaddr_in *addr) {
   int fd;
   socklen_t len;
 
-  // fix compiler warning
-  (void)wdb;
-  
   // FIXME: use wdb variable
+  (void)wdb;
     
   len = sizeof (struct sockaddr_in);
 
@@ -240,8 +234,6 @@ connect_to_slave (char *slave) {
   int sfd;
   struct sockaddr_in addr;
   struct in_addr slave_addr;
-  int i;
-  int conn_tries = MAX_CONNECT_ATTEMPTS;
 
   /* check IP address */
   // FIXME: handle IPv4 and IPv6 with a regex */
@@ -249,44 +241,39 @@ connect_to_slave (char *slave) {
     drerrno_system = errno;
     drerrno = DRE_NOTCOMPLETE;
     return -1;
-    }
+  }
 
   /* convert address to usable type */
   if (inet_aton(slave, &slave_addr) == 0) {
     drerrno_system = errno;
     drerrno = DRE_NOTCOMPLETE;
     return -1;
-    }
+  }
 
   addr.sin_family = AF_INET;
   addr.sin_port = htons(SLAVEPORT);
   addr.sin_addr = slave_addr;
 
-  /* open connection, try MAX_CONNECT_ATTEMPTS times */
-  for (i=1; i<=MAX_CONNECT_ATTEMPTS; i++) {
+  struct hostent *hostinfo;
 
-    sfd = socket (PF_INET,SOCK_STREAM,0);
-    if (sfd == -1) {
-      drerrno_system = errno;
-      drerrno = DRE_NOSOCKET;
-      return -1;
-    }
+  addr.sin_family = AF_INET;
+  addr.sin_port = htons(SLAVEPORT); /* Whatever */
+  hostinfo = gethostbyname (slave);
+  if (hostinfo == NULL) {
+    drerrno_system = errno;
+    drerrno = DRE_NOTRESOLVE;
+    return -1;
+  }
+  addr.sin_addr = *(struct in_addr *) hostinfo->h_addr;
 
-    if (connect(sfd, (struct sockaddr *)&addr, sizeof (addr)) == -1) {
-      if (i < MAX_CONNECT_ATTEMPTS) {
-        log_auto(L_ERROR, "connect(): communications problem. Could not connect to master (%s). Retry in 2 seconds.", strerror(errno));
-        sleep(2);
-      } else {
-        log_auto(L_ERROR, "connect(): communications problem. Could not connect to slave (%s). Giving up after %i attempts.", strerror(errno), conn_tries);
-        drerrno_system = errno;
-        drerrno = DRE_NOCONNECT;
-        return -1;
-      }
-    } else {
-      return sfd;
-    }
+  sfd = socket (PF_INET,SOCK_STREAM,0);
+  if (sfd == -1) {
+    drerrno_system = errno;
+    drerrno = DRE_NOCONNECT;
+    return -1;
   }
 
+    return sfd;
 }
 
 int
@@ -358,7 +345,6 @@ recv_computer_hwinfo (int sfd, struct computer_hwinfo *hwinfo) {
   datasize = sizeof(struct computer_hwinfo);
   if (!check_recv_datasize(sfd, datasize)) {
     log_auto (L_ERROR,"recv_computer_hwinfo(): different data sizes for 'struct computer_hwinfo'.");
-    log_auto (L_ERROR,"datasize is %i",datasize);
     return 0;
   }
 
@@ -390,7 +376,6 @@ send_computer_hwinfo (int sfd, struct computer_hwinfo *hwinfo) {
   datasize = sizeof(bswapped);
   if (!check_send_datasize(sfd,datasize)) {
     log_auto (L_ERROR,"send_computer_hwinfo(): different data sizes for struct computer_hwinfo.");
-    log_auto (L_ERROR,"datasize is %i",datasize);
     return 0;
   }
 
