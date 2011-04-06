@@ -1,5 +1,5 @@
 //
-// Copyright (C) 2001,2002,2003,2004 Jorge Daza Garcia-Blanes
+// Copyright (C) 2001-2011 Jorge Daza Garcia-Blanes
 // Copyright (C) 2010 Andreas Schroeder
 //
 // This file is part of DrQueue
@@ -48,11 +48,6 @@ int main (int argc,char *argv[]) {
   enum operation op = OP_NONE;
   int nRet = 0;
   
-  if(network_initialize() != 0) {
-    fprintf (stderr,"Could not initialize the network: %s\n", drerrno_str());
-    return 1;
-  }
-
   while ((opt = getopt (argc,argv,"lndc:vh")) != -1) {
     switch (opt) {
     case 'd':
@@ -63,7 +58,7 @@ int main (int argc,char *argv[]) {
       break;
     case 'v':
       show_version (argv);
-      goto cleanup;
+      break;
     case 'l':
       op = OP_LIST;
       break;
@@ -74,14 +69,13 @@ int main (int argc,char *argv[]) {
     case 'h':
       usage();
       nRet = 1;
-      goto cleanup;
     }
   }
 
   if ((op == OP_NONE)) {
     usage ();
     nRet = 1;
-    goto cleanup;
+    exit(nRet);
   }
 
   set_default_env();
@@ -89,7 +83,7 @@ int main (int argc,char *argv[]) {
   if (!common_environment_check()) {
     fprintf (stderr,"Error checking the environment: %s\n",drerrno_str());
     nRet = 1;
-    goto cleanup;
+    exit(1);
   }
 
   switch (op) {
@@ -100,7 +94,7 @@ int main (int argc,char *argv[]) {
     if ((ncomputers = request_computer_list (&computer,CLIENT)) == -1) {
       fprintf (stderr,"ERROR: While trying to request the computer list: %s\n",drerrno_str());
       nRet = 1;
-      goto cleanup;
+      exit(nRet);
     }
     print_computers (computer,ncomputers);
     break;
@@ -108,7 +102,7 @@ int main (int argc,char *argv[]) {
     if ((ncomputers = request_computer_list (&computer,CLIENT)) == -1) {
       fprintf (stderr,"ERROR: While trying to request the computer list: %s\n",drerrno_str());
       nRet = 1;
-      goto cleanup;
+      exit(nRet);
     }
     printf ("%i\n",ncomputers);
     break;
@@ -118,24 +112,18 @@ int main (int argc,char *argv[]) {
       computer_init(computer);
       if (!computer) {
         fprintf (stderr,"ERROR: Not enough memory\n");
-        nRet = 1;
-        goto cleanup;
+        exit(1);
       }
       if (!request_comp_xfer(icomp,computer,CLIENT)) {
         fprintf (stderr,"ERROR: While trying to request the computer transfer: %s\n",drerrno_str());
-        nRet = 1;
-        goto cleanup;
+        exit(1);
       }
       print_computer_details (computer);
     } else {
       fprintf (stderr,"You need to specify the computer id using -c <computer_id>\n");
-      nRet = 1;
-      goto cleanup;
+      exit(1);
     }
   }
-
-cleanup:
-  network_shutdown();
 
   return nRet;
 }

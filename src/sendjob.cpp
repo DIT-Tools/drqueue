@@ -1,5 +1,5 @@
 //
-// Copyright (C) 2001,2002,2003,2004,2005,2006,2007 Jorge Daza Garcia-Blanes
+// Copyright (C) 2001-2011 Jorge Daza Garcia-Blanes
 //
 // This file is part of DrQueue
 //
@@ -57,7 +57,7 @@ int main (int argc,char *argv[]) {
       debug = true;
       continue;
     case 'v':
-      show_version();
+      show_version(argv);
       exit (0);
     case 't':
       // DEBUG:

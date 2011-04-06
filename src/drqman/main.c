@@ -1,5 +1,5 @@
 //
-// Copyright (C) 2001,2002,2003,2004,2005,2006,2007 Jorge Daza Garcia-Blanes
+// Copyright (C) 2001-2011 Jorge Daza Garcia-Blanes
 //
 // This file is part of DrQueue
 //
@@ -58,12 +58,6 @@ int main (int argc, char *argv[]) {
 
   gtk_init(&argc,&argv);
   
-  if(network_initialize() != 0) {
-    fprintf (stderr,"Could not initialize the network: %s\n", drerrno_str());
-    nRet = 1;
-    goto cleanup;
-  }
-  
   // fprintf (stderr,"drqman pid: %i\n",getpid());
   drqman_get_options(&argc,&argv);
   set_default_env(); // Config files overrides environment
@@ -108,9 +102,6 @@ int main (int argc, char *argv[]) {
   gtk_widget_show(window);
 
   gtk_main();
-
-  cleanup:
-  network_shutdown();
 
   return nRet;
 }
