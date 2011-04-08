@@ -18,25 +18,14 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 // USA
 //
+
+
 #include <stdio.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netdb.h>
-
-
-
-#ifdef HAVE_UNISTD_H
 #include <unistd.h>
-#endif
-
-#ifndef _WIN32
-#include <netdb.h>
 #include <arpa/inet.h>
-#else
-#include <winsock2.h>
-#define socklen_t int
-#define ssize_t int
-#endif
 
 #include "pointer.h"
 #include "communications.h"
@@ -178,8 +167,6 @@ connect_to_master (void) {
   char *master;
   struct addrinfo hints,*res,*res0;
   struct sockaddr_in *sa;
-  int i;
-  int conn_tries = MAX_CONNECT_ATTEMPTS;
   
   drerrno = DRE_NOERROR;
   

@@ -22,10 +22,7 @@
 #include <stdio.h>
 #include <sys/stat.h>
 #include <fcntl.h>
-
-#ifdef HAVE_UNISTD_H
 #include <unistd.h>
-#endif
 
 #include "pointer.h"
 #include "database.h"

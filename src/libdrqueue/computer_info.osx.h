@@ -25,6 +25,7 @@
 #include <stdint.h>
 #include <signal.h>
 #include <netdb.h>
+#include <unistd.h>
 
 #define STR_ARCH_INTEL "i386"
 #define STR_ARCH_PPC "Power Macintosh"
