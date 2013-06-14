@@ -321,10 +321,23 @@ bin_viewcmd_files = glob.glob(os.path.join('bin/viewcmd','*'))
 copy_with_clean(bin_viewcmd_files,bin_viewcmd_files,idir_prefix,env)
 
 # install documentation files
-doc_files = [ 'AUTHORS', 'COPYING', 'ChangeLog', 'INSTALL', 'NEWS', 'README', 'README.darwin', 'README.mentalray', 'README.python', 'README.shell_variables', 'README.windows', 'setenv' ]
+doc_files = [
+	'AUTHORS',
+	'COPYING',
+	'ChangeLog',
+	'INSTALL',
+	'NEWS',
+	'README',
+	'README.darwin',
+	'README.mentalray',
+	'README.python',
+	'README.shell_variables',
+	'README.windows',
+	'setenv'
+	]
 n = len(doc_files)
 for i in range(0, n):
-    env.Install(idir_doc, doc_files[i])
+    env.Install(idir_doc, os.path.join( "..", doc_files[i] ) )
 
 env.Command (idir_prefix,[],[Mkdir("$TARGET"),Chmod("$TARGET",0777)])
 perm_logs = env.Command (idir_logs,[],[Mkdir("$TARGET"),Chmod("$TARGET",0777)])
@@ -333,6 +346,8 @@ perm_tmp = env.Command (idir_tmp,[],[Mkdir("$TARGET"),Chmod("$TARGET",0777)])
 env.Clean(perm_tmp,idir_tmp)
 perm_db = env.Command (idir_db,[],[Mkdir("$TARGET"),Chmod("$TARGET",0777)])
 env.Clean(perm_db,idir_db)
+perm_etc = env.Command (idir_etc,[],[Mkdir("$TARGET"),Chmod("$TARGET",0777)])
+env.Clean(perm_etc,idir_etc)
 
 #env.Depends (install_base,perm_logs)
 #env.Depends (install_base,perm_tmp)
