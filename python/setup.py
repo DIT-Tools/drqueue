@@ -21,6 +21,8 @@
 # 
 
 from setuptools import setup
+import os
+import sys
 
 import glob
 from setuptools import setup, find_packages, Extension
@@ -78,7 +80,7 @@ def get_abspath_glob(path):
   
 def get_swig_flags():
     swigflags = ['-I'+get_abspath('..'),
-                 #'-I'+get_abspath(os.path.join('..','libdrqueue')),
+                 '-I'+get_abspath(os.path.join('..','libdrqueue')),
                  '-I'+get_abspath(os.path.join('libdrqueue'))]
     if sys.platform == "linux2":
       swigflags = swigflags + ['-D__LINUX']
@@ -129,7 +131,7 @@ setup(
                  library_dirs= [ distutils.sysconfig.get_python_lib() ] + custom_library_paths(),
                  define_macros=get_define_macros(),
                  include_dirs=[get_abspath('..'),
-                               #get_abspath(os.path.join('..','libdrqueue')),  
+                               get_abspath(os.path.join('..','libdrqueue')),  
                                get_abspath('libdrqueue')] +
                                custom_include_paths(),
                  swig_opts=get_swig_flags()),],
