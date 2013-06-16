@@ -138,14 +138,14 @@ typedef unsigned long long   uint_fast64_t;
 #endif
 
 /* 7.18.1.5  Greatest-width integer types */
-typedef long long  intmax_t;
-typedef unsigned long long uintmax_t;
+//typedef long long  intmax_t;
+//typedef unsigned long long uintmax_t;
 
 /* 7.18.2  Limits of specified-width integer types */
 #if !defined ( __cplusplus) || defined (__STDC_LIMIT_MACROS)
 
 /* 7.18.2.1  Limits of exact-width integer types */
-#define INT8_MIN (-128) 
+#define INT8_MIN (-128)
 #define INT16_MIN (-32768)
 #define INT32_MIN (-2147483647 - 1)
 #define INT64_MIN  (-9223372036854775807LL - 1)

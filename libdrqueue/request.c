@@ -44,8 +44,6 @@
 /* For the differences between data in big endian and little endian */
 /* I transmit everything in network byte order */
 
-int phantom[2];
-
 void
 handle_request_master (int sfd, struct database *wdb, int icomp, struct sockaddr_in *addr) {
   struct request request;

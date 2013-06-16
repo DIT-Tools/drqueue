@@ -24,9 +24,6 @@
 
 #include <errno.h>
 
-extern int drerrno;              // global errno
-extern int drerrno_system;       // system's errno at the time of the error
-
 #define DRE_NOERROR     0 /* No error */
 #define DRE_ERROROPENING  1  /* Could not open file or directory */
 #define DRE_NOTRESOLVE   2 /* Could not resolve hostname */
@@ -57,6 +54,9 @@ extern int drerrno_system;       // system's errno at the time of the error
 #define DRE_CONNMASTER      27  // No connection to master
 #define DRE_COMMPROBLEM     28  // Communications problem
 #define DRE_NETWORKINIT     29  /* Failed to Initialized the network */
+
+static int drerrno = DRE_NOERROR;
+static int drerrno_system = 0;
 
 char *drerrno_str (void);
 

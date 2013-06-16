@@ -109,6 +109,7 @@ def custom_library_paths():
     if sys.platform == 'win32':
         paths += [get_abspath(os.path.join('/','cygwin','usr','lib'))]
         paths += [get_abspath(os.path.join('/','cygwin','lib','mingw'))]
+    paths.append( get_abspath(os.path.join('..','libdrqueue')) )
     return paths
 
 setup(
@@ -127,13 +128,13 @@ setup(
                  ['src/drqueue/base/libdrqueue.i'] \
                  #+ get_abspath_glob(os.path.join('..','libdrqueue','*.c')) \
                  + get_abspath_glob(os.path.join('libdrqueue','*.c')),
-                 libraries = [ 'python'+distutils.sysconfig.get_python_version() ],
-                 library_dirs= [ distutils.sysconfig.get_python_lib() ] + custom_library_paths(),
-                 define_macros=get_define_macros(),
-                 include_dirs=[get_abspath('..'),
-                               get_abspath(os.path.join('..','libdrqueue')),  
-                               get_abspath('libdrqueue')] +
-                               custom_include_paths(),
+                 libraries     = [ 'python'+distutils.sysconfig.get_python_version(), 'drqueue' ],
+                 library_dirs  = [ distutils.sysconfig.get_python_lib() ] + custom_library_paths(),
+                 define_macros =   get_define_macros(),
+                 include_dirs  = [ get_abspath('..'),
+                                   get_abspath(os.path.join('..','libdrqueue')),  
+                                   get_abspath('libdrqueue')] +
+                                   custom_include_paths(),
                  swig_opts=get_swig_flags()),],
     #packages = find_packages(exclude='ez_setup.py'),
     packages = [ 'drqueue', 'drqueue.base' ],

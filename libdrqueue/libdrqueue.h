@@ -54,7 +54,7 @@ extern "C" {
 
 #pragma pack(push,1)
 
-extern int drerrno;
+//extern int drerrno;
 
 #include "pointer.h"
 #include "slavedb.h"

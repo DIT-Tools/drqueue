@@ -40,6 +40,8 @@
 extern "C" {
 #endif
 
+int phantom[2];
+
 #pragma pack(push,1)
 
   struct request {
